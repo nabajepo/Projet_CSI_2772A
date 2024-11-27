@@ -3,10 +3,10 @@ using namespace std;
 class Card {
     protected:
            int totalCards; //nbre of cards
-           int nbre_of_cards_for_oneCoin;
-           int nbre_of_cards_for_twoCoins;
-           int nbre_of_cards_for_threeCoins;
-           int nbre_of_cards_for_fourCoins;
+           int nbre_of_cards_for_oneCoin;//for one coin
+           int nbre_of_cards_for_twoCoins;//for two coins
+           int nbre_of_cards_for_threeCoins;//for three coins 
+           int nbre_of_cards_for_fourCoins;//for four coins
     public:
           Card(int total, int cardsOneCoin, int cardsTwoCoins, 
           int cardsThreeCoins, int cardsFourCoins): 
@@ -15,7 +15,8 @@ class Card {
            nbre_of_cards_for_fourCoins(cardsFourCoins) {}//constructor to initialize each card
            virtual int getCardsPerCoin(int) = 0;
            virtual string getName() = 0;//to get name 
-           virtual void print(ostream&) = 0;
+           virtual void print(ostream&) = 0;//to show the first caractere of the card
+           virtual int getTotalOfCards()=0;//to get the total of each cards 
            virtual ~Card() = default;//The destructor
            
 };
@@ -30,6 +31,7 @@ class Blue : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Blue";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0)<<" ";}
 };
 class Chili : public Card {
@@ -43,6 +45,7 @@ class Chili : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Chili";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0)<< " ";}
 };
 class Stink : public Card {
@@ -56,6 +59,7 @@ class Stink : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Stink";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0)<< " " ;}
 };
 class Green : public Card {
@@ -69,6 +73,7 @@ class Green : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Green";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0) << " ";}
 };
 class Soy : public Card {
@@ -82,6 +87,7 @@ class Soy : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Soy";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0)<< " ";}
 };
 class Black : public Card {
@@ -95,6 +101,7 @@ class Black : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Black";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0)<< " ";}
 };
 class Red : public Card {
@@ -108,6 +115,7 @@ class Red : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Red";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0)<< " ";}
 };
 class Garden : public Card {
@@ -119,5 +127,6 @@ class Garden : public Card {
                  return 0;//we send zero for any other values
            }
            string getName() override {return "Garden";}
+           int getTotalOfCards() override{return totalCards;}
            void print(ostream& os) override {os << getName().at(0) << " ";}
 };

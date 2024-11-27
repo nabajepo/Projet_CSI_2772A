@@ -6,6 +6,7 @@ class Card;
 
 class Deck : public vector<Card*> {
 public:
+    //Constructeur
     Deck();
     // Constructeur qui accepte un istream et un CardFactory pour construire un deck à partir d'un fichier
     Deck(istream&, const CardFactory*);

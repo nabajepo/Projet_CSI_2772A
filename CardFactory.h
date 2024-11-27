@@ -1,7 +1,10 @@
-class Deck;
+#include <iostream>
+#include "Deck.h"
+using namespace std;
+class Card;
 class CardFactory {
   private:
-    Deck allCards;
+    Deck cards;
     static CardFactory* instance;
   public:
     CardFactory();  
