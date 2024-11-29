@@ -3,7 +3,7 @@
 using namespace std;
 class Card;
 template<class T>
-class DiscardPile : public vector<Card*> {
+class DiscardPile : public vector<T> {
 public:
     // Constructeur
     DiscardPile(){}
@@ -11,32 +11,49 @@ public:
     DiscardPile(istream& , const CardFactory*);
 
     // Ajoute une carte à la pile de déchet
-    DiscardPile& operator+=(Card* card){
+    DiscardPile& operator+=(T card){
         this->push_back(card);
         return *this;
     }
 
     // Renvoie et supprime la carte supérieure de la pile
-    Card* pickUp(){
-        Card* topC=this->back();
-        this->pop_back();
-        return topC;
+    T pickUp(){
+        if(this.size()>0){
+            T topC=this->back();
+            this->pop_back();
+            return topC;
+        }
+        else{
+             cout <<"Le  discardPile est vide "<<endl;
+             return nullptr;
+        }
+        
     }
 
     // Renvoie mais ne supprime pas la carte supérieure de la pile
-    Card* top(){return this->back();}
+    T top() const{
+        if(this->size()>0)return this->back();
+        else{
+            cout <<"Le  discardPile est vide "<<endl;
+            return nullptr;
+        }
+    }     
 
     // Insère toutes les cartes de la pile dans un ostream
     void print(ostream& os){
-        string cards="";
-        for(Card* card:*this){
-            cards=cards+card->getName()+"\n";  
+        if (this->size()>0){
+            os<<"| ";
+            for(T card:*this)
+            os<<card->getName()<<" | ";
         }
-        os<<cards;
+        else os<<"Le discardPile est vide "<<endl;
+        
     }
     // Insère seulement la carte supérieure dans un ostream
-    friend ostream& operator<<(ostream& os, const DiscardPile& dsc){
-           os << dsc.top()->getName()<<endl;
+    friend ostream& operator<<(ostream& os, const DiscardPile<T>& dsc){
+        if(dsc.size()>0)os << dsc.top()->getName()<<endl; 
+        else os<<"La pile est vide "<<endl;
+        return os;
     }
 };
 

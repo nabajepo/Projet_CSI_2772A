@@ -20,13 +20,12 @@ public:
         for(Card* card:*this){
            if(exC->getName()==card->getName())return true;
         }
-       return false;
+       return false;//cad ne se trouve pas dans le trade
     }
     // Échange une carte avec un nom donné
     Card* trade(string nameCard){
         auto it = find_if(this->begin(), this->end(), [&](Card* card) {
         return card->getName() == nameCard;});
-
         if (it != this->end()) {
             Card* cardN = *it;
             this->erase(it); // Supprime la carte trouvée
@@ -35,22 +34,28 @@ public:
         return nullptr; // Retourne nullptr si aucune carte ne correspond
     }
     // Retourne le nombre de cartes dans l'échange
-    int numCards(){return this->size();}
+    int numCards() const{return this->size();}
     // Opérateur d'insertion pour afficher l'échange
     friend ostream& operator<<(ostream& os, const TradeArea<Card*>& trade){
-        string chaine="## trade : ";
-        for(Card* card:trade){
-            chaine=chaine+card->getName()+" ";
+        if(trade.numCards()>0){
+            os<<" ## Trade : | ";
+            for(Card* card:trade)os<<card->getName()<<" | ";
+            os<<" ##"<<endl;
         }
-        os<<chaine<<" ##"<<endl;
+        else os<<"Le trade est vide "<<endl;
         return os;
     }
-    
     //retourner  une carte à une position donnée
     Card* getElementAt(int index){
-        auto it=this->begin();
-        advance(it,index);
-        return *it;
+        if(numCards()>0){
+            auto it=this->begin();
+            advance(it,index);
+            return *it;
+        }
+        else{
+            cout <<"Le Trade est vide "<<endl;
+            return nullptr;
+        }
     }
     //retourne une carte par le nom
     Card* getCardByName(string nameCard){

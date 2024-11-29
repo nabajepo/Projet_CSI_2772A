@@ -7,16 +7,16 @@ class Card;
 using namespace std;
 //quand on veut acheter une chaine 
 class NotEnoughCoins : public exception {
+   public: 
     const char* what() const noexcept override {
         return "Desolé vous avez pas accès de coins il faut au moins 2 coins pour acheter un nouveu chaine";
     }
 };
-template<class T>
 class Player {
 private:
     string name;                // Nom du joueur
     int coins;                       // Nombre de pièces
-    vector<T> chains;       // Chaînes du joueur
+    vector<Chain<Card*>> chains;       // Chaînes du joueur
     Hand hand;                       // Main du joueur
 
 public:
@@ -37,9 +37,9 @@ public:
     }                       // Ajouter des pièces
 
     int getMaxNumChains(){return 3;}                 // Obtenir le nombre max de chaînes
-    int getNumChains(){return chains.size();}             // Obtenir le nombre actuel de chaînes
+    int getNumChains() const{return chains.size();}             // Obtenir le nombre actuel de chaînes
     
-    Chain<Card*>& operator[](int index){
+    const Chain<Card*>& operator[](int index) const{//obtenir une chaine à une position donnée
         assert(index>=0 && index<chains.size());
         return chains[index];
     }                       // Accès à une chaîne par index
@@ -47,10 +47,12 @@ public:
     void buyThirdChain(){
        try{
           if(getNumChains()<getMaxNumChains()){
-            if(coins>2){
+            if(coins>=2){
+                coins-=2;//on reduit de 2 le nombre de coins
                 Chain<Card*> newChaine;
                 chains.push_back(newChaine);
-                cout <<"Une 3 eme chaine a ete cree "<<endl;
+                cout <<"Vous avez payez avec succes une 3 eme chaine  "<<endl;
+                
             }
             else throw NotEnoughCoins();
           }
@@ -70,26 +72,21 @@ public:
     //afficher toute les informations du joueur
     friend ostream& operator<<(ostream& os, const Player& ply){
         os<<ply.name<<" : "<<ply.coins<<" coins "<<endl;
-        for (int index=0;index<ply.chains.size();index++){
-            if(ply.chains[index].getNameChain()!="VIDE")os<<ply.chains[index]<<endl;
-            else {
-                os<<"Chain [" <<index<<"] : VIDE"<<endl;
-            }
+        for(int index=0;index<ply.getNumChains();index++){
+            if(ply[index].getNameChain()!="VIDE")os<<ply[index]<<endl;
+            else os<<"Chaine [ "<<index<<" ] : VIDE"<<endl;
         }
         return os;
     }
     //pour avoir  la premier card de la main du joeur
-    Card* showTopCard(){
-        cout <<" Votre premiere carte est : | "<<hand.top()->getName()<<" |"<<endl;
-        return hand.top();
-    }
+    Card* showTopCard(){return hand.top();}
     //pour jouer la premier carte
-    Card* playFirstCard(){
-        cout <<" Votre premiere carte est : | "<<hand.top()->getName()<<" |"<<endl;
-        return hand.play();
-    }
+    Card* playFirstCard(){return hand.play();}
     //pour avoir une carte à partir d'un nom
-    Card* getCard(string name){return hand.getCardByName(name);}
+    Card* getCardByName(string name){return hand.getCardByName(name);}
     //pour supprimer une carte à partir d'un nom
-    void deletCard(string name){hand.removeCardByName(name);}
+    void deletCardByName(string name){hand.removeCardByName(name);}
+    //ajouter une carte sur une chaine specifique à partir d'un index
+    void addCardToChain(int index,Card* card){chains[index]+=card;}
+    
 };

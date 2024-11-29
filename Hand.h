@@ -20,23 +20,48 @@ public:
     }
     // Renvoie et supprime la première carte de la main
     Card* play(){
-      Card* topCard=cards[0];
-      cards.erase(cards.begin());
-      return topCard;
+      if (getSizeHand()>0){
+         Card* topCard=cards[0];
+         cout <<" Votre premiere carte est : | "<<topCard->getName()<<" |"<<endl;
+         cards.erase(cards.begin());
+         return topCard;
+      }
+      else {
+        cout <<"Votre main est vide "<<endl;
+        return nullptr;
+      }    
+
     }
+    //pour avoir le nombre de carte sur la main
+    int getSizeHand(){return cards.size();}
     // Renvoie mais ne supprime pas la première carte de la main
-    Card* top(){return cards[0];}
+    Card* top(){
+      if(getSizeHand()>0) {
+        cout <<" Votre premiere carte est : | "<<cards[0]->getName()<<" |"<<endl;
+        return cards[0];
+      }  
+      else{
+        cout <<"Votre main est vide "<<endl;
+        return nullptr;
+      }
+    }
     // Renvoie et supprime une carte à une position donnée
     Card* operator[](int index){
-          assert(index>=0 && index<cards.size());
-          return cards[index];
+          Card* card=cards[index];
+          cards.erase(cards.begin() + index);
+          return card;
     }
     // Affiche toutes les cartes dans la main
     friend ostream& operator<<(ostream& os, const Hand& hand){
-         for (auto card : hand.cards) { // Suppose que Deck est itérable
-           os <<"  " <<card->getName() << " | "; // Écriture directe dans le flux
+       if(hand.cards.size()>0){
+         os<<" | ";
+         for (Card* card : hand.cards) { // Suppose que Deck est itérable
+           os <<card->getName() << " | "; // Écriture directe dans le flux
          }
-         return os;
+         os<<endl;
+       }
+       else os<<"Votre main est vide ";
+       return os;
     }
     //avoir une carte à partir d'un nom
     Card* getCardByName(string nameCard){
@@ -49,6 +74,7 @@ public:
             if(cards[index]->getName()==nameCard) cards.erase(cards.begin()+index);
          }  
     }
+    
 
     
 };
