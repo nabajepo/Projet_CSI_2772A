@@ -14,7 +14,11 @@
 #include "TradeArea.h"
 using namespace std;
 int main(){
-    //We start code here 
+    CardFactory m;
+    Deck o=m.getDeck();
+    cout<<o;
+    cout<<o.size()<<endl;
+    cout<<m.createCard("Stink")->getName()<<endl;
     return 0;
 }
 

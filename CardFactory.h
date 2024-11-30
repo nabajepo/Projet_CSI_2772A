@@ -2,14 +2,20 @@ class Deck;
 class Card;
 class CardFactory {
   private:
+    Card** card;
     Deck cards;
   public:
     CardFactory(){
         //interface
-        Card* card[]={new Blue(),new Chili(),
-                   new Stink(),new Green(),
-                   new Soy(),new Black(),
-                   new Red(),new Garden()};
+        card=new Card*[8];
+        card[0] = new Blue();
+        card[1] = new Chili();
+        card[2] = new Stink();
+        card[3] = new Green();
+        card[4] = new Soy();
+        card[5] = new Black();
+        card[6] = new Red();
+        card[7] = new Garden();
       //insertion des cartes   
       for(int i=0;i<8;i++)
         for(int j=0;j<card[i]->getTotalOfCards();j++)
@@ -27,12 +33,6 @@ class CardFactory {
     CardFactory& operator=(const CardFactory&) = delete; // Interdire l'affectation
     //creer une classe à l'aide d'un nom 
     Card* createCard(string nameCard){
-      //interface
-        Card* card[]={new Blue(),new Chili(),
-                   new Stink(),new Green(),
-                   new Soy(),new Black(),
-                   new Red(),new Garden()};
-        //recherche           
         for(int index=0;index<8;index++)
             if(card[index]->getName()==nameCard) return card[index];
         return nullptr;    
