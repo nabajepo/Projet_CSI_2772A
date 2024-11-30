@@ -14,7 +14,7 @@
 #include "TradeArea.h"
 using namespace std;
 int main(){
-    //code pour le main 
+    //Le code pour le main 
     return 0;
 }
 

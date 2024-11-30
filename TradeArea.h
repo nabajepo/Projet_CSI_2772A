@@ -20,7 +20,8 @@ public:
         for(Card* card:*this){
            if(exC->getName()==card->getName())return true;
         }
-       return false;//cad ne se trouve pas dans le trade
+        cout << "La carte "<<exC->getName()<<" n'est pas valide "<<endl;
+        return false;//cad ne se trouve pas dans le trade
     }
     // Échange une carte avec un nom donné
     Card* trade(string nameCard){
@@ -38,11 +39,11 @@ public:
     // Opérateur d'insertion pour afficher l'échange
     friend ostream& operator<<(ostream& os, const TradeArea<Card*>& trade){
         if(trade.numCards()>0){
-            os<<" ## Trade : | ";
-            for(Card* card:trade)os<<card->getName()<<" | ";
-            os<<" ##"<<endl;
+            os<<"|";
+            for(Card* card:trade)os<<card->getName()<<"|";
+            os<<endl;
         }
-        else os<<"Le trade est vide "<<endl;
+        else os<<"#Le trade est vide#"<<endl;
         return os;
     }
     //retourner  une carte à une position donnée
@@ -66,5 +67,26 @@ public:
     void destroyTrade(){
         TradeArea<Card*> newTrade;/////ici on supprimer les cartes se trouvant dans le trade 
         *this=newTrade;
+    }
+     //pour afficher toutes les cartes de la main par ligne
+    void getTrade(ostream& os){
+         if(this->size()>0){
+            for (Card* card :*this){// Suppose que Deck est itérable
+                 os <<card->getName() <<endl; // Écriture directe dans le flux
+            }
+         }   
+         else os<<"#Le trade est vide#"<<endl;
+    }
+    //pour sauvegarder le trade
+    void saveTrade(string file,int index){
+         ofstream outFile(file,ios::app);
+         if(outFile.is_open()){
+             outFile<<index<<endl;
+             outFile<<"Taille:"<<this->size()<<endl;
+             getTrade(outFile);
+             outFile.close();
+             cout<<"Le Trade a ete sauvegarde avec succes "<<endl;
+         }
+         else cout<<"Erreur de sauvegarde du Trade "<<endl;   
     }
 };

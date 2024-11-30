@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include <vector>
 #include <cassert>
 class Hand;
@@ -9,7 +11,7 @@ using namespace std;
 class NotEnoughCoins : public exception {
    public: 
     const char* what() const noexcept override {
-        return "Desolé vous avez pas accès de coins il faut au moins 2 coins pour acheter un nouveu chaine";
+        return "Desole vous avez pas acces de coins pour une 3 eme chaine il faut au moins 2 coins";
     }
 };
 class Player {
@@ -39,8 +41,7 @@ public:
     int getMaxNumChains(){return 3;}                 // Obtenir le nombre max de chaînes
     int getNumChains() const{return chains.size();}             // Obtenir le nombre actuel de chaînes
     
-    const Chain<Card*>& operator[](int index) const{//obtenir une chaine à une position donnée
-        assert(index>=0 && index<chains.size());
+    Chain<Card*>& operator[](int index){//obtenir une chaine à une position donnée
         return chains[index];
     }                       // Accès à une chaîne par index
     // Acheter une troisième chaîne
@@ -70,10 +71,10 @@ public:
     // Insere des cartes à dans la main du joueur
     void addCardInHand(Card* card){hand+=card;}
     //afficher toute les informations du joueur
-    friend ostream& operator<<(ostream& os, const Player& ply){
+    friend ostream& operator<<(ostream& os,const Player& ply){
         os<<ply.name<<" : "<<ply.coins<<" coins "<<endl;
         for(int index=0;index<ply.getNumChains();index++){
-            if(ply[index].getNameChain()!="VIDE")os<<ply[index]<<endl;
+            if(ply.chains[index].getNameChain()!="VIDE")os<<ply.chains[index]<<endl;
             else os<<"Chaine [ "<<index<<" ] : VIDE"<<endl;
         }
         return os;
@@ -88,5 +89,29 @@ public:
     void deletCardByName(string name){hand.removeCardByName(name);}
     //ajouter une carte sur une chaine specifique à partir d'un index
     void addCardToChain(int index,Card* card){chains[index]+=card;}
+    //pour sauvegarder toutes les informations du joueur 
+    void savePlayer(string file,int index){
+         ofstream outFile(file,ios::app);
+         if(outFile.is_open()){
+            outFile<<index<<endl;
+            outFile<<"Nom:"<<name<<endl;
+            outFile<<"Coins:"<<getNumCoins()<<endl;
+            outFile<<"NC:"<<getNumChains()<<endl;
+            outFile<<"C0:"<<chains[0].getNameChain()<<endl;
+            outFile<<"C0S:"<<chains[0].getSizeChain()<<endl;
+            outFile<<"C1:"<<chains[1].getNameChain()<<endl;
+            outFile<<"C1S:"<<chains[1].getSizeChain()<<endl;
+            if(getNumChains()>2){
+                outFile<<"C2:"<<chains[2].getNameChain()<<endl;
+                outFile<<"C2S:"<<chains[2].getSizeChain()<<endl;
+            }
+            outFile<<"Cartes"<<endl;
+            hand.getHand(outFile);
+            outFile.close();
+            cout<<"Les infos du joueur "<<name<<" a ete sauvegarde avec succes"<<endl;
+         }
+         else cout<<"Erreur de sauvegarde des infos du  joueur "<<name<<endl;
+    }
+    
     
 };

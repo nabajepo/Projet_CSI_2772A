@@ -33,7 +33,7 @@ public:
 
     }
     //pour avoir le nombre de carte sur la main
-    int getSizeHand(){return cards.size();}
+    int getSizeHand() const{return cards.size();}
     // Renvoie mais ne supprime pas la première carte de la main
     Card* top(){
       if(getSizeHand()>0) {
@@ -53,14 +53,14 @@ public:
     }
     // Affiche toutes les cartes dans la main
     friend ostream& operator<<(ostream& os, const Hand& hand){
-       if(hand.cards.size()>0){
-         os<<" | ";
+       if(hand.getSizeHand()>0){
+         os<<"|";
          for (Card* card : hand.cards) { // Suppose que Deck est itérable
-           os <<card->getName() << " | "; // Écriture directe dans le flux
+           os <<card->getName() << "|"; // Écriture directe dans le flux
          }
          os<<endl;
        }
-       else os<<"Votre main est vide ";
+       else os<<"#Votre main est vide#"<<endl;
        return os;
     }
     //avoir une carte à partir d'un nom
@@ -70,9 +70,18 @@ public:
     }
     //supprime une carte par le nom
     void removeCardByName(string nameCard){
-         for(int index=0;index<cards.size();index++){
+         for(int index=0;index<cards.size();index++)
             if(cards[index]->getName()==nameCard) cards.erase(cards.begin()+index);
-         }  
+         
+    }
+    //pour afficher toutes les cartes de la main par ligne
+    void getHand(ostream& os){
+         if(getSizeHand()>0){
+            for (Card* card : cards){// Suppose que Deck est itérable
+                 os <<card->getName() <<endl; // Écriture directe dans le flux
+            }
+          }
+          else os<<"#Votre main est vide#"<<endl;
     }
     
 

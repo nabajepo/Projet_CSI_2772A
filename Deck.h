@@ -20,10 +20,21 @@ public:
     // Opérateur d'insertion pour afficher le deck dans un std::ostream
     friend ostream& operator<<(ostream& os, const Deck& deck){
         for (Card* card : deck) { // Suppose que Deck est itérable
-               os << card->getName() << "\n"; // Écriture directe dans le flux
+               os << card->getName() << endl; // Écriture directe dans le flux
         }
         return os; 
     }
-    
+    //pour sauvegarder le deck
+    void saveDeck(string file,int index){
+         ofstream outFile(file,ios::app);
+         if(outFile.is_open()){
+             outFile<<index<<endl;
+             outFile<<"Taille:"<<this->size()<<endl;
+             outFile<<*this;
+             outFile.close();
+             cout<<"Le deck a ete sauvegarde avec succes "<<endl;
+         }
+         else cout<<"Erreur de sauvegarde du deck "<<index<<endl;   
+    }
 };
 

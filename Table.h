@@ -31,7 +31,7 @@ class Table {
         }
         return false; // Personne ne gagne tant que le Deck n'est pas vide
     }
-    //on affiche toute les mains des joue                       
+    //on affiche toute les mains des joue  true toute les mains et false une carte                     
     void printHand(bool choice){
         cout << "Pour joueur 1 " <<endl;
         player1.printHand(cout,choice);
@@ -42,9 +42,9 @@ class Table {
     }                          // Afficher la main du joueur
     // Afficher la table
     friend ostream& operator<<(ostream& os, const Table& table){
-        os << "Player 1: " << table.player1 << endl; // Affiche le joueur 1
-        os << "Player 2: " << table.player2 << endl; // Affiche le joueur 2
-        os << "Discard Pile: " << table.trash << endl; // Affiche la pile de défausse
+        os << "Player 1: " <<endl<<table.player1 << endl; // Affiche le joueur 1
+        os << "Player 2: " <<endl<< table.player2 << endl; // Affiche le joueur 2
+        os << "Discard Pile: "<<table.trash<< endl; // Affiche la pile de défausse
         os << "Trade Area: " << table.trade << endl;     // Affiche la zone commerciale
         return os;
     } 

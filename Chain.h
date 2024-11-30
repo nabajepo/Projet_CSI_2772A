@@ -18,7 +18,7 @@ public:
     virtual string getNameChain() const=0;
     virtual void destroyChain()=0;
     virtual int sell()=0;
-    virtual int getSizeChain()=0;
+    virtual int getSizeChain() const=0;
     virtual ~Chain_base()=default;
 };
 template<class T>
@@ -66,7 +66,7 @@ public:
         return 0;
     }
     //Methode pour savoir le nombre de cartes dans la chain
-    int getSizeChain() override{return cards.size();}
+    int getSizeChain() const override{return cards.size();}
     // Opérateur d'insertion pour afficher la chaîne
     friend ostream& operator<<(ostream& os, const Chain<T>& chain){
         os<<chain.cardType->getName()<<" : ";
