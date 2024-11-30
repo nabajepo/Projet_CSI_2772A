@@ -17,10 +17,9 @@ class CardFactory {
         card[6] = new Red();
         card[7] = new Garden();
       //insertion des cartes   
-      for(int i=0;i<8;i++)
-        for(int j=0;j<card[i]->getTotalOfCards();j++)
+        for(int i=0;i<8;i++)
+           for(int j=0;j<card[i]->getTotalOfCards();j++)
               cards.push_back(card[i]);
-       
     }
     static CardFactory* getFactory(){return new CardFactory();} // Renvoie l'unique instance de CardFactory
     Deck getDeck(){
