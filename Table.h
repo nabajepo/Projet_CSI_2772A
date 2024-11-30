@@ -48,7 +48,7 @@ class Table {
         os << "Trade Area: " << table.trade << endl;     // Affiche la zone commerciale
         return os;
     } 
-    //affiche les joueur 
+    //affiche les joueurs 
     void showPlayers() const{ 
       cout<<"------------INFO-PLAYERS---------------"<<endl;
       cout <<"Pour joueur 1 : "<<endl;

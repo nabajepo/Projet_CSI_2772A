@@ -1,6 +1,8 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <fstream>
+#include <string>
 #include "Card.h"
 #include "Chain.h"
 #include "Deck.h"
@@ -12,7 +14,7 @@
 #include "TradeArea.h"
 using namespace std;
 int main(){
-    // we start code here 
+    //We start code here 
     return 0;
 }
 
