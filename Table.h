@@ -1,10 +1,14 @@
 #include  <iostream>
 using namespace std;
+class Player;
+class Deck;
+class Card;
 template <typename C>
 class TradeArea;
 template <typename C>
 class Table {
   private:
+       Player player;//celui qui est entrain de jouer 
        Player player1;//joueur 1
        Player player2;//joueur 2
        Deck deck;//toutes les cartes melanagées
@@ -22,7 +26,7 @@ class Table {
           deck(deck),
           trash(trashT),
           trade(tradeT){}
-    Table(istream&, const CardFactory*);      // Constructeur avec flux
+    Table(istream& file, const CardFactory* factory);
     bool win(string& winnername){
         if (deck.size()==0) { // Si le Deck est vide
           if (player1.getNumCoins()> player2.getNumCoins()) return winnername==player1.getName();//Le joueur 1 à gagner 
@@ -45,7 +49,7 @@ class Table {
         os << "Player 1: " <<endl<<table.player1 << endl; // Affiche le joueur 1
         os << "Player 2: " <<endl<< table.player2 << endl; // Affiche le joueur 2
         os << "Discard Pile: "<<table.trash<< endl; // Affiche la pile de défausse
-        os << "Trade Area: " << table.trade << endl;     // Affiche la zone commerciale
+        os << "Trade Area: " << table.trade << endl;     // Affiche la zone commerciale*/
         return os;
     } 
     //affiche les joueurs 
@@ -56,5 +60,6 @@ class Table {
       cout<<"Pour joueur 2 : "<<endl;
       cout <<player2;
       cout<<"---------------------------------------"<<endl;
-    }  
+    }
+    
 };

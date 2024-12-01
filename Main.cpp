@@ -12,9 +12,9 @@
 #include "Player.h"
 #include "Table.h"
 #include "TradeArea.h"
-using namespace std;
+
 int main(){
-    //Le code pour le main 
+   //code  pour le main  
     return 0;
 }
 

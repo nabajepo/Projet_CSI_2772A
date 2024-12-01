@@ -9,7 +9,11 @@ public:
     //constructeur
     TradeArea(){}
     // Constructeur qui initialise la TradeArea à partir d'un flux istream
-    TradeArea(istream&, const CardFactory*);
+    TradeArea(istream& file, const CardFactory* factory){
+        vector<string> cards=split(split(split(getInfoTrade(file),'.')[1],':')[1],'|');
+        for(string card:cards)
+             this->push_back(createCard(card));//on insere le card dans le trade
+    }
     // Opérateur d'ajout d'une carte à l'échange
     TradeArea& operator+=(Card* newCard){
         this->push_back(newCard);
@@ -23,7 +27,7 @@ public:
         cout << "La carte "<<exC->getName()<<" n'est pas valide "<<endl;
         return false;//cad ne se trouve pas dans le trade
     }
-    // Échange une carte avec un nom donné
+    // supprime une carte donnée et la retourne 
     Card* trade(string nameCard){
         auto it = find_if(this->begin(), this->end(), [&](Card* card) {
         return card->getName() == nameCard;});
@@ -39,7 +43,6 @@ public:
     // Opérateur d'insertion pour afficher l'échange
     friend ostream& operator<<(ostream& os, const TradeArea<Card*>& trade){
         if(trade.numCards()>0){
-            os<<"|";
             for(Card* card:trade)os<<card->getName()<<"|";
             os<<endl;
         }
@@ -68,25 +71,48 @@ public:
         TradeArea<Card*> newTrade;/////ici on supprimer les cartes se trouvant dans le trade 
         *this=newTrade;
     }
-     //pour afficher toutes les cartes de la main par ligne
-    void getTrade(ostream& os){
-         if(this->size()>0){
-            for (Card* card :*this){// Suppose que Deck est itérable
-                 os <<card->getName() <<endl; // Écriture directe dans le flux
-            }
-         }   
-         else os<<"#Le trade est vide#"<<endl;
-    }
     //pour sauvegarder le trade
     void saveTrade(string file,int index){
          ofstream outFile(file,ios::app);
          if(outFile.is_open()){
              outFile<<index<<endl;
              outFile<<"Taille:"<<this->size()<<endl;
-             getTrade(outFile);
+             outFile<<"Cartes:"<<*this;
              outFile.close();
              cout<<"Le Trade a ete sauvegarde avec succes "<<endl;
          }
          else cout<<"Erreur de sauvegarde du Trade "<<endl;   
+    }
+    //pour stocker les informations du Trade dans un string
+    string getInfoTrade(istream& file){
+        string info="";
+        string line;
+        bool save=false;
+        while(getline(file,line)){
+            if(line=="5")save=true;//on commence à enregistrer si on arrive à l'index
+            else if(line=="6")break;//on stop quand on arrive à l'index 5
+            else if(save)info=info+line+"."; 
+        }
+        return info;
+    }
+     //pour split un string 
+    vector<string> split(const string& str, char delimiter) {
+        vector<string> tokens;
+        istringstream stream(str);
+        string token;
+        while (getline(stream, token, delimiter)) {
+               tokens.push_back(token);
+        }
+        return tokens;
+    }
+     //creer une classe à l'aide d'un nom 
+    Card* createCard(string nameCard){
+        Card* card[]={new Blue(),new Chili(),
+                   new Stink(),new Green(),
+                   new Soy(),new Black(),
+                   new Red(),new Garden()};
+        for(int index=0;index<8;index++)
+            if(card[index]->getName()==nameCard) return card[index];
+        return nullptr;    
     }
 };

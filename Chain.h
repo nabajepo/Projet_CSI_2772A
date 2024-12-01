@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
-class Card;
-class CardFactory;
 using namespace std;
+class CardFactory;
+class Card;
+
 //Error exception
 class IllegalType : public exception {
    public: 

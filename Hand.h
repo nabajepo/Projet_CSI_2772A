@@ -54,7 +54,6 @@ public:
     // Affiche toutes les cartes dans la main
     friend ostream& operator<<(ostream& os, const Hand& hand){
        if(hand.getSizeHand()>0){
-         os<<"|";
          for (Card* card : hand.cards) { // Suppose que Deck est itérable
            os <<card->getName() << "|"; // Écriture directe dans le flux
          }
@@ -74,16 +73,5 @@ public:
             if(cards[index]->getName()==nameCard) cards.erase(cards.begin()+index);
          
     }
-    //pour afficher toutes les cartes de la main par ligne
-    void getHand(ostream& os){
-         if(getSizeHand()>0){
-            for (Card* card : cards){// Suppose que Deck est itérable
-                 os <<card->getName() <<endl; // Écriture directe dans le flux
-            }
-          }
-          else os<<"#Votre main est vide#"<<endl;
-    }
-    
-
     
 };

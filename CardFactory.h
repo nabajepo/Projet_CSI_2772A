@@ -1,5 +1,9 @@
+#include <iostream>
+#include <sstream>
+#include <string>
 class Deck;
 class Card;
+using namespace std;
 class CardFactory {
   private:
     Card** card;
@@ -21,7 +25,7 @@ class CardFactory {
            for(int j=0;j<card[i]->getTotalOfCards();j++)
               cards.push_back(card[i]);
     }
-    static CardFactory* getFactory(){return new CardFactory();} // Renvoie l'unique instance de CardFactory
+    static CardFactory* getFactory(){return new CardFactory();} // Renvoie un unique instance de CardFactory
     Deck getDeck(){
       random_device rd;
       mt19937 gen(rd());
@@ -30,12 +34,5 @@ class CardFactory {
     }                // Renvoie un Deck contenant toutes les cartes, mélangées
     CardFactory(const CardFactory&) = delete; // Interdire la copie
     CardFactory& operator=(const CardFactory&) = delete; // Interdire l'affectation
-    //creer une classe à l'aide d'un nom 
-    Card* createCard(string nameCard){
-        for(int index=0;index<8;index++)
-            if(card[index]->getName()==nameCard) return card[index];
-        return nullptr;    
-    }
-    
 };
 

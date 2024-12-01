@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cassert>
 class Hand;
 class CardFactory;
 class Card;
@@ -20,8 +19,10 @@ private:
     int coins;                       // Nombre de pièces
     vector<Chain<Card*>> chains;       // Chaînes du joueur
     Hand hand;                       // Main du joueur
-
+    int position;//represente la position du joueur dans le fichier 
 public:
+    //constructeur pour player
+    Player():name(""),coins(0){}
     //constructeur avec un nom
     Player(string& nameP):name(nameP),coins(0){
          Chain<Card*> firstChain;
@@ -29,7 +30,24 @@ public:
          chains.push_back(firstChain);//on a initialement 2 chaines  vides
          chains.push_back(secondChain);
     }               // Constructeur avec nom
-    Player(istream&, const CardFactory*);     // Constructeur avec flux
+    Player(istream& file, const CardFactory* factory,int pos){//constructeur du flux
+         position=pos;
+         vector<string> plt=split(getInfoPlayer(file),'.');
+         name=split(plt[0],':')[1];
+         coins=stoi(split(plt[1],':')[1]);
+         int lenCh=stoi(split(plt[2],':')[1]);
+         for(int index=0;index<lenCh;index++){
+            if(index==0)makeChain(plt,3);
+            else if(index==1)makeChain(plt,5);
+            else makeChain(plt,7);
+         }
+         vector<string> cards;
+         if (lenCh==3)cards=split(plt[9],':');
+         else cards=split(plt[7],':');
+         vector<string> hand=split(cards[1],'|');
+         for(string card:hand)
+             addCardInHand(createCard(card));//on insere le card dans le trade
+    }   
 
     string getName(){return name;}                   // Obtenir le nom du joueur
     int getNumCoins(){return coins;};                       // Obtenir le nombre de pièces
@@ -105,13 +123,55 @@ public:
                 outFile<<"C2:"<<chains[2].getNameChain()<<endl;
                 outFile<<"C2S:"<<chains[2].getSizeChain()<<endl;
             }
-            outFile<<"Cartes"<<endl;
-            hand.getHand(outFile);
+            outFile<<"Cartes:"<<hand;
             outFile.close();
             cout<<"Les infos du joueur "<<name<<" a ete sauvegarde avec succes"<<endl;
          }
          else cout<<"Erreur de sauvegarde des infos du  joueur "<<name<<endl;
     }
+     //pour stocker les informations du player dans un string
+    string getInfoPlayer(istream& file){
+        string info="";
+        string line;
+        bool save=false;
+        while(getline(file,line)){
+            if(line==to_string(position))save=true;//on commence à enregistrer si on arrive à l'index
+            else if(line==to_string(position+1))break;//on arrete à l'index suivant
+            else if(save)info=info+line+"."; 
+        }
+        return info;
+    }
+   //pour split un string 
+    vector<string> split(const string& str, char delimiter) {
+        vector<string> tokens;
+        istringstream stream(str);
+        string token;
+        while (getline(stream, token, delimiter)) {
+               tokens.push_back(token);
+        }
+        return tokens;
+    }
+     //creer une classe à l'aide d'un nom 
+    Card* createCard(string nameCard){
+        Card* card[]={new Blue(),new Chili(),
+                   new Stink(),new Green(),
+                   new Soy(),new Black(),
+                   new Red(),new Garden()};
+        for(int index=0;index<8;index++)
+            if(card[index]->getName()==nameCard) return card[index];
+        return nullptr;    
+    }
+    //pour creer les chaines à partir d'un fichier
+    void makeChain(vector<string>& vec,int index){
+        Chain<Card*> newCh;
+        if(split(vec[index],':')[1]!="VIDE"){
+            int length=stoi(split(vec[index+1],':')[1]);
+            Card* card=createCard(split(vec[index],':')[1]);
+            for(int index=0;index<length;index++)newCh+=card;
+        }
+        chains.push_back(newCh);
+    }
+   
     
     
 };
