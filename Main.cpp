@@ -42,14 +42,12 @@ int main(){
         //on veut faire une pause 
         int pause=game.pause(player.getName());
         if(pause==2){table.saveTable();break;}
-        //update la table
-        table.updateTable(player,player1,player2,trash,trade,deckOfCard);
         //on affiche la table
         LOG(table)
         //Cartes
         player.printHand(cout,true);
         //joue et pioche et fini sont tour 
-        table.playTurn(player,playerW,deckOfCard);//reste à developper ca 
+        table.playTurn(player,player1,player2,trash,trade,deckOfCard);//reste à developper ca 
         //on continue à jouer
         cout<<"Il reste dans le desk que "<<deckOfCard.size()<<" cartes "<<endl;
         //on swap

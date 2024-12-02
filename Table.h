@@ -217,7 +217,8 @@ class Table {
         return tokens;
     }
     //Pour jouer un tour
-    void playTurn(Player& playerG,Player& waitPlayer,Deck& dec){
+    void playTurn(Player& playe,Player& playe1,Player& playe2,
+                  DiscardPile<Card*>& dr,TradeArea<Card*>& tr,Deck& decOfC){
      
     }
     //pour piocher 
