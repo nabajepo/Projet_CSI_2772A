@@ -41,12 +41,23 @@ public:
             else if(index==1)makeChain(plt,5);
             else makeChain(plt,7);
          }
+         vector<string> taille;
          vector<string> cards;
-         if (lenCh==3)cards=split(plt[9],':');
-         else cards=split(plt[7],':');
-         vector<string> hand=split(cards[1],'|');
-         for(string card:hand)
-             addCardInHand(createCard(card));//on insere le card dans le trade
+         if (lenCh==3){
+            taille=split(plt[9],':');
+            cards=split(plt[10],':');
+         }
+         else {
+            taille=split(plt[7],':');
+            cards=split(plt[8],':');
+         }
+         int tailleP=stoi(taille[1]);
+         if(tailleP!=0){
+             vector<string> hand=split(cards[1],'|');
+             for(string card:hand)
+                addCardInHand(createCard(card));//on insere le card dans le trade
+         }
+        
     }   
 
     string getName(){return name;}                   // Obtenir le nom du joueur
@@ -123,6 +134,7 @@ public:
                 outFile<<"C2:"<<chains[2].getNameChain()<<endl;
                 outFile<<"C2S:"<<chains[2].getSizeChain()<<endl;
             }
+            outFile<<"SH:"<<hand.getSizeHand()<<endl;
             outFile<<"Cartes:"<<hand;
             outFile.close();
             cout<<"Les infos du joueur "<<name<<" a ete sauvegarde avec succes"<<endl;
@@ -171,6 +183,8 @@ public:
         }
         chains.push_back(newCh);
     }
+    //pour obtenir le nombre de cartes à la main
+    int getSizePlayer(){return hand.getSizeHand();}
    
     
     

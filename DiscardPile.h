@@ -11,9 +11,15 @@ public:
     DiscardPile(){}
     // Constructeur qui accepte un istream et un CardFactory pour construire une pile de cartes à partir d'un fichier
     DiscardPile(istream& file, const CardFactory* factory){
-          vector<string> cards=split(split(split(getInfoDiscard(file),'.')[1],':')[1],'|');
-          for(string card:cards)
-             this->push_back(createCard(card));//on insere les cards dans le discard
+          vector<string> ds=split(getInfoDiscard(file),'.');
+          vector<string> taille=split(ds[0],':');
+          int tailleD=stoi(taille[1]);
+          if(tailleD!=0){
+              vector<string> cards=split(split(ds[1],':')[1],'|');
+              for(string card:cards)
+                 this->push_back(createCard(card));//on insere les cards dans le discard
+          }
+         
     }
     // Ajoute une carte à la pile de déchet
     DiscardPile& operator+=(T card){

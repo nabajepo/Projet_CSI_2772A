@@ -10,9 +10,15 @@ public:
     TradeArea(){}
     // Constructeur qui initialise la TradeArea à partir d'un flux istream
     TradeArea(istream& file, const CardFactory* factory){
-        vector<string> cards=split(split(split(getInfoTrade(file),'.')[1],':')[1],'|');
-        for(string card:cards)
+        vector<string> tr=split(getInfoTrade(file),'.');
+        vector<string> taille=split(tr[0],':');
+        int tailleT=stoi(taille[1]);
+        if(tailleT!=0){
+           vector<string> cards=split(split(tr[1],':')[1],'|');
+           for(string card:cards)
              this->push_back(createCard(card));//on insere le card dans le trade
+        }
+        
     }
     // Opérateur d'ajout d'une carte à l'échange
     TradeArea& operator+=(Card* newCard){
@@ -57,7 +63,7 @@ public:
             return *it;
         }
         else{
-            cout <<"Le Trade est vide "<<endl;
+            cout <<"#Le trade est vide# "<<endl;
             return nullptr;
         }
     }

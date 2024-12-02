@@ -86,6 +86,7 @@ public:
          vector<T> card;
          cards=card;
          cardType=nullptr;
+         cout <<"La chaine a ete detruit avec succes "<<endl;
     }
     //on
 };
