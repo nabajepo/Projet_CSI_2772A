@@ -2,10 +2,9 @@
 #include <fstream>
 #include <iostream>
 using namespace std;
-class Player;
+
 class Game {
   public:
-    Player ply;
     Game() {}
 
     // pour faire une pause

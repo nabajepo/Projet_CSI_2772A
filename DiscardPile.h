@@ -4,7 +4,9 @@
 #include <vector>
 using namespace std;
 class Card;
-template <class T> class DiscardPile : public vector<T> {
+class DiscardPile {
+    std::vector<Card *> cards;
+
   public:
     // Constructeur
     DiscardPile() {}
@@ -16,23 +18,25 @@ template <class T> class DiscardPile : public vector<T> {
         vector<string> taille = split(ds[0], ':');
         int tailleD = stoi(taille[1]);
         if (tailleD != 0) {
-            vector<string> cards = split(split(ds[1], ':')[1], '|');
-            for (string card : cards)
-                this->push_back(
-                    createCard(card)); // on insere les cards dans le discard
+            vector<string> cartes = split(split(ds[1], ':')[1], '|');
+            // for (string card : cards)
+            // cards.push_back(
+            //     createCard(card)); // utiliser factory Object
+            // on insere les cards dans le discard
         }
     }
+
     // Ajoute une carte à la pile de déchet
-    DiscardPile &operator+=(T card) {
-        this->push_back(card);
+    DiscardPile &operator+=(Card *card) {
+        cards.push_back(card);
         return *this;
     }
 
     // Renvoie et supprime la carte supérieure de la pile
-    T pickUp() {
-        if (this.size() > 0) {
-            T topC = this->back();
-            this->pop_back();
+    Card *pickUp() {
+        if (cards.size() > 0) {
+            Card *topC = cards.back();
+            cards.pop_back();
             return topC;
         } else {
             cout << "Le  discardPile est vide " << endl;
@@ -41,9 +45,9 @@ template <class T> class DiscardPile : public vector<T> {
     }
 
     // Renvoie mais ne supprime pas la carte supérieure de la pile
-    T top() const {
-        if (this->size() > 0)
-            return this->back();
+    Card *top() const {
+        if (cards.size() > 0)
+            return cards.back();
         else {
             cout << "Le  discardPile est vide " << endl;
             return nullptr;
@@ -52,15 +56,18 @@ template <class T> class DiscardPile : public vector<T> {
 
     // Insère toutes les cartes de la pile dans un ostream
     void print(ostream &os) {
-        if (this->size() > 0) {
-            for (T card : *this)
+        if (cards.size() > 0) {
+            for (Card *card : cards)
                 os << card->getName() << "|";
             os << endl;
         } else
             os << "#Le discardPile est vide#" << endl;
     }
+
+    int size() const { return cards.size(); }
+
     // Insère seulement la carte supérieure dans un ostream
-    friend ostream &operator<<(ostream &os, const DiscardPile<T> &dsc) {
+    friend ostream &operator<<(ostream &os, const DiscardPile &dsc) {
         if (dsc.size() > 0)
             os << "|" << dsc.top()->getName() << "|" << endl;
         else
@@ -73,7 +80,7 @@ template <class T> class DiscardPile : public vector<T> {
         ofstream outFile(file, ios::app);
         if (outFile.is_open()) {
             outFile << index << endl;
-            outFile << "Taille:" << this->size() << endl;
+            outFile << "Taille:" << cards.size() << endl;
             outFile << "Cartes:";
             print(outFile);
             outFile.close();

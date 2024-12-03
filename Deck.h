@@ -1,16 +1,20 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <fstream>
 #include <vector>
 using namespace std;
+
 class Card;
 class CardFactory;
+
 class Deck : public vector<Card *> {
   public:
     // Constructeur
     Deck() {}
+
     // Constructeur qui accepte un istream et un CardFactory pour construire un
-    // deck à partir d'un fichier
+    // deck à partir d'un fichier. TODO: use factory to create cards instead
     Deck(istream &file, const CardFactory *factory) {
         vector<string> cards =
             split(split(split(getInfoDeck(file), '.')[1], ':')[1], '|');
@@ -33,6 +37,7 @@ class Deck : public vector<Card *> {
 
         return os;
     }
+
     // pour sauvegarder le deck
     void saveDeck(string file, int index) {
         ofstream outFile(file, ios::app);
@@ -45,7 +50,7 @@ class Deck : public vector<Card *> {
         } else
             cout << "Erreur de sauvegarde du deck " << index << endl;
     }
-    
+
     // pour stocker les informations du deck dans un string
     string getInfoDeck(istream &file) {
         string info = "";
