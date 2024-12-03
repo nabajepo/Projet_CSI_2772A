@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
+
 class Card;
 class CardFactory;
 class Hand {
@@ -24,10 +25,9 @@ class Hand {
             Card *topCard = cards[0];
             cout << " Votre premiere carte est : | " << topCard->getName()
                  << " |" << endl;
-            cards.erase(cards.begin());
             return topCard;
         } else {
-            cout << "Votre main est vide " << endl;
+            cout << "Votre main est vide!" << endl;
             return nullptr;
         }
     }
@@ -37,7 +37,7 @@ class Hand {
 
     // Renvoie mais ne supprime pas la première carte de la main
     Card *top() {
-        if (getSizeHand() > 0) {
+        if (cards.size() > 0) {
             cout << " Votre premiere carte est : | " << cards[0]->getName()
                  << " |" << endl;
             return cards[0];
@@ -50,7 +50,6 @@ class Hand {
     // Renvoie et supprime une carte à une position donnée
     Card *operator[](int index) {
         Card *card = cards[index];
-        cards.erase(cards.begin() + index);
         return card;
     }
 

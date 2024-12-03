@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+
 using namespace std;
 class CardFactory;
 class Card;
@@ -9,73 +10,69 @@ class Card;
 class IllegalType : public exception {
   public:
     const char *what() const noexcept override {
-        return "Erreur de type de carte : ";
+        return "Erreur de type de carte";
     }
 };
 
 // Interface abstraite de base pour les chaînes
-class Chain_base {
+class Chain_Base {
   public:
     virtual string getNameChain() const = 0;
     virtual void destroyChain() = 0;
     virtual int sell() = 0;
     virtual int getSizeChain() const = 0;
-    virtual ~Chain_base() = default;
+    virtual ~Chain_Base() = default;
 };
+
 template <class T>
 // Classe Chain template pour les cartes
-class Chain : public Chain_base {
+class Chain : public Chain_Base {
   private:
     vector<T> cards; // Conteneur pour stocker les cartes
-    T cardType;
 
   public:
-    // constructeur
-    Chain() : cardType(nullptr) {}
-    
+    Chain() {}
     // Constructeur qui accepte un istream et un CardFactory (pour la création
-    // de cartes)
+    // de cartes). TODO: implement this function
     Chain(istream &, const CardFactory *);
+
     // Opérateur += pour ajouter une carte à la chaîne
-    Chain<T> &operator+=(T newCard) {
+    Chain<T> &operator+=(Card *newCard) {
         try {
-            if (cardType == nullptr) {
-                cardType = newCard;
-                cards.push_back(newCard);
-                return *this;
-            } else if (newCard->getName() == cardType->getName()) {
-                cards.push_back(newCard);
-                return *this;
-            } else
+            if (typeid(T).name() != newCard->getName())
                 throw IllegalType();
-        } catch (const IllegalType &e) {
-            cout << e.what() << newCard->getName() << endl;
+
+            cards.push_back(newCard);
+            return *this;
+        } catch (IllegalType &e) {
+            cout << e.what() << ": " << newCard->getName() << endl;
             return *this;
         }
     }
-    // Méthode pour calculer le nombre de pièces en fonction des cartes dans la
-    // chaîne
+
+    // Méthode pour calculer le nombre de pièces en fonction des cartes dans
+    // la chaîne
     int sell() override {
-        if (cardType == nullptr)
+        if (cards.size() == 0)
             return 0;
-        if ((cardType->getCardsPerCoin(1) == cards.size()) ||
-            ((cardType->getCardsPerCoin(1) != 0) &&
-             (cardType->getCardsPerCoin(1) < cards.size()) &&
-             (cardType->getCardsPerCoin(2) > cards.size())))
-            return 1;
-        if ((cardType->getCardsPerCoin(2) == cards.size()) ||
-            ((cardType->getCardsPerCoin(2) < cards.size()) &&
-             (cardType->getCardsPerCoin(3) > cards.size())))
-            return 2;
-        if ((cardType->getCardsPerCoin(3) == cards.size()) ||
-            ((cardType->getCardsPerCoin(3) < cards.size()) &&
-             (cardType->getCardsPerCoin(4) > cards.size())) ||
-            (cardType->getCardsPerCoin(4) == 0))
-            return 3;
-        if ((cardType->getCardsPerCoin(4) == cards.size()) ||
-            ((cardType->getCardsPerCoin(4) < cards.size())))
-            return 4;
-        return 0;
+
+        int size = cards.size();
+        T card = cards.front();
+        int coins = 0;
+
+        for (int i = 1; i <= 4; ++i) {
+            if (card->getCardsPerCoin(i) == size) {
+                coins = i;
+                break;
+            } else if (card->getCardsPerCoin(i) < size &&
+                       (i == 4 || card->getCardsPerCoin(i + 1) > size ||
+                        card->getCardsPerCoin(i + 1) == 0)) {
+                coins = i;
+                break;
+            }
+        }
+
+        return coins;
     }
 
     // Methode pour savoir le nombre de cartes dans la chain
@@ -83,27 +80,28 @@ class Chain : public Chain_base {
 
     // Opérateur d'insertion pour afficher la chaîne
     friend ostream &operator<<(ostream &os, const Chain<T> &chain) {
-        os << chain.cardType->getName() << " : ";
+        os << chain.cardType->getName() << "\t";
         for (auto card : chain.cards) {
             os << card->getName().at(0) << " ";
         }
+        os << endl;
+
         return os;
     }
 
     // return le nom de la chain
     string getNameChain() const override {
-        if (cardType == nullptr)
+        if (cards.size() == 0)
             return "VIDE";
         else
-            return cardType->getName();
+            return cards.front()->getName();
     }
 
     // on supprime toute les cartes sur la chaine
     void destroyChain() override {
-        vector<T> card;
-        cards = card;
-        cardType = nullptr;
+        cards.clear();
         cout << "La chaine a ete detruit avec succes " << endl;
     }
-    // on
+
+    Card *getCard(int index) const { return cards[index]; }
 };

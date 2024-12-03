@@ -2,10 +2,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
-class Hand;
-class CardFactory;
-class Card;
+
 using namespace std;
+
 // quand on veut acheter une chaine
 class NotEnoughCoins : public exception {
   public:
@@ -22,15 +21,20 @@ class Player {
     Hand hand;                    // Main du joueur
     int position; // represente la position du joueur dans le fichier
   public:
-    // constructeur pour player
-    Player() : name(""), coins(0) {}
     // constructeur avec un nom
-    Player(string &nameP) : name(nameP), coins(0) {
-        Chain<Card *> firstChain;
-        Chain<Card *> secondChain;
-        chains.push_back(firstChain); // on a initialement 2 chaines  vides
-        chains.push_back(secondChain);
+    Player(const string &playerName) {
+        name = playerName;
+        coins = 0;
+
+        Chain<Card *> chainOne;
+        chains.push_back(chainOne); // on a initialement 2 chaines  vides
+
+        Chain<Card *> chainTwo;
+
+        chains.push_back(chainTwo);
     } // Constructeur avec nom
+
+    // @TODO: use factory object to generate cards
     Player(istream &file, const CardFactory *factory,
            int pos) { // constructeur du flux
         position = pos;
@@ -73,7 +77,8 @@ class Player {
         return *this;
     } // Ajouter des pièces
 
-    int getMaxNumChains() { return 3; } // Obtenir le nombre max de chaînes
+    int getMaxNumChains() { return 3; } // Obtenir le nombre max de chaînes.
+
     int getNumChains() const {
         return chains.size();
     } // Obtenir le nombre actuel de chaînes
@@ -101,26 +106,38 @@ class Player {
             cout << e.what() << endl; // erreur
         }
     }
+
     // si true on affiche la main si nom on affiche la premiere carte
     void printHand(ostream &os, bool ch) {
-        if (ch)
-            os << hand;
-        else
+        if (!ch) {
             os << hand.top()->getName();
+            return;
+        }
+
+        os << hand; // TODO
+        for (int i = 0; i < hand.getSizeHand(); ++i) {
+            os << hand[i]->getName() << " ";
+        }
     }
+
     // Insere des cartes à dans la main du joueur
     void addCardInHand(Card *card) { hand += card; }
+
     // afficher toute les informations du joueur
     friend ostream &operator<<(ostream &os, const Player &ply) {
         os << ply.name << " : " << ply.coins << " coins " << endl;
+
         for (int index = 0; index < ply.getNumChains(); index++) {
-            if (ply.chains[index].getNameChain() != "VIDE")
-                os << ply.chains[index] << endl;
-            else
-                os << "Chaine [ " << index << " ] : VIDE" << endl;
+            os << ply.chains[index].getNameChain() << "\t";
+            for (int j = 0; j < ply.chains[index].getSizeChain(); j++) {
+                os << ply.chains[index].getCard(j)->getName()[0] << " ";
+            }
+            os << endl;
         }
+
         return os;
     }
+
     // pour avoir  la premier card de la main du joeur
     Card *showTopCard() { return hand.top(); }
 
