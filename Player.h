@@ -114,7 +114,6 @@ class Player {
             return;
         }
 
-        os << hand; // TODO
         for (int i = 0; i < hand.getSizeHand(); ++i) {
             os << hand[i]->getName() << " ";
         }
@@ -151,7 +150,7 @@ class Player {
     void deletCardByName(string name) { hand.removeCardByName(name); }
 
     // ajouter une carte sur une chaine specifique à partir d'un index
-    void addCardToChain(int index, Card *card) { chains[index] += card; }
+    void addCardToChain(int index, Card *card) { chains[index - 1] += card; }
 
     // pour sauvegarder toutes les informations du joueur
     void savePlayer(string file, int index) {
@@ -229,4 +228,11 @@ class Player {
 
     // pour obtenir le nombre de cartes à la main
     int getSizePlayer() { return hand.getSizeHand(); }
+
+    Chain<Card *> &getChain(int index) {
+        if (index >= chains.size() || index <= 0)
+            throw out_of_range("Chain index out of range!");
+
+        return chains[index - 1];
+    }
 };

@@ -8,7 +8,7 @@ class Game {
     Game() {}
 
     // pour faire une pause
-    int pause(string nameP) {
+    int showMenu(string nameP) {
         int choice;
         cout << nameP << " voulez-vous continuer ? " << endl
              << "1.Oui " << endl
@@ -17,7 +17,7 @@ class Game {
         cin >> choice;
         if (choice != 1 && choice != 2) {
             cout << "SVP entrez un nombre valide " << endl;
-            return pause(nameP);
+            return showMenu(nameP);
         } else
             return choice;
     }
@@ -200,5 +200,17 @@ class Game {
             return getPlacementD();
         } else
             return choice;
+    }
+
+    // pour avoir le nom d'un joueur
+    string inputPlayerName() {
+        string playerName;
+        cout << "Entrez le nom du joueur: ";
+        getline(cin >> ws, playerName);
+        if (playerName.empty()) {
+            cout << "SVP entrez un nom valide " << endl;
+            return inputPlayerName();
+        } else
+            return playerName;
     }
 };

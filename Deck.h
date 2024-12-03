@@ -25,6 +25,8 @@ class Deck : public vector<Card *> {
 
     // Méthode pour tirer et supprimer la carte supérieure du deck
     Card *draw() {
+        if (this->empty()) return nullptr;
+        
         Card *topCard = this->back();
         this->pop_back();
         return topCard;

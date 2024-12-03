@@ -23,7 +23,7 @@ class Hand {
     Card *play() {
         if (getSizeHand() > 0) {
             Card *topCard = cards[0];
-            cout << " Votre premiere carte est : | " << topCard->getName()
+            cout << "Votre premiere carte est : | " << topCard->getName()
                  << " |" << endl;
             return topCard;
         } else {

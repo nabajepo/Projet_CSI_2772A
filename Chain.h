@@ -10,7 +10,7 @@ class Card;
 class IllegalType : public exception {
   public:
     const char *what() const noexcept override {
-        return "Erreur de type de carte";
+        return "Erreur de type de carte: ";
     }
 };
 
@@ -38,16 +38,11 @@ class Chain : public Chain_Base {
 
     // Opérateur += pour ajouter une carte à la chaîne
     Chain<T> &operator+=(Card *newCard) {
-        try {
-            if (typeid(T).name() != newCard->getName())
-                throw IllegalType();
+        if (typeid(T).name() != newCard->getName())
+            throw IllegalType();
 
-            cards.push_back(newCard);
-            return *this;
-        } catch (IllegalType &e) {
-            cout << e.what() << ": " << newCard->getName() << endl;
-            return *this;
-        }
+        cards.push_back(newCard);
+        return *this;
     }
 
     // Méthode pour calculer le nombre de pièces en fonction des cartes dans
