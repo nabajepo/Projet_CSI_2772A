@@ -1,5 +1,9 @@
+#ifndef CHAIN_H
+#define CHAIN_H
+
 #include <iostream>
 #include <stdexcept>
+#include <typeinfo>
 #include <vector>
 
 using namespace std;
@@ -38,7 +42,7 @@ class Chain : public Chain_Base {
 
     // Opérateur += pour ajouter une carte à la chaîne
     Chain<T> &operator+=(Card *newCard) {
-        if (typeid(T).name() != newCard->getName())
+        if (typeid(T) != typeid(newCard))
             throw IllegalType();
 
         cards.push_back(newCard);
@@ -95,8 +99,10 @@ class Chain : public Chain_Base {
     // on supprime toute les cartes sur la chaine
     void destroyChain() override {
         cards.clear();
-        cout << "La chaine a ete detruit avec succes " << endl;
+        cout << "[INFO] La chaine a ete detruit avec succes " << endl;
     }
 
     Card *getCard(int index) const { return cards[index]; }
 };
+
+#endif

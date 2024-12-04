@@ -1,6 +1,12 @@
+#ifndef GAME_H
+#define GAME_H
+
+#include "Player.h"
+#include "Table.h"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+
 using namespace std;
 
 class Game {
@@ -8,24 +14,22 @@ class Game {
     Game() {}
 
     // pour faire une pause
-    int showMenu(string nameP) {
+    bool shouldPause() {
         int choice;
-        cout << nameP << " voulez-vous continuer ? " << endl
-             << "1.Oui " << endl
-             << "2.Non" << endl
+        cout << "[Pause] Voulez-vous arreter et sauvegarder le jeu (game.txt)? "
+             << endl
+             << "1. Oui " << endl
+             << "2. Non" << endl
              << "Entrez votre choix : ";
         cin >> choice;
-        if (choice != 1 && choice != 2) {
-            cout << "SVP entrez un nombre valide " << endl;
-            return showMenu(nameP);
-        } else
-            return choice;
+
+        return choice == 1;
     }
 
     // pour le choix du joueur à propos des cartes
-    int choicePlayer(string nameP) {
+    int choicePlayer() {
         int choice;
-        cout << nameP << "que voulez-vous faire ? " << endl
+        cout << "Que voulez-vous faire ? " << endl
              << " 1.Trade la premiere carte ou plusieurs cartes " << endl
              << " 2.Chainer la premiere carte de la main " << endl
              << "3.Jeter la premiere  carte de la main" << endl
@@ -36,8 +40,8 @@ class Game {
         cin >> choice;
         if (choice != 1 && choice != 2 && choice != 3 && choice != 4 &&
             choice != 5 && choice != 6) {
-            cout << "SVP " << nameP << " entrez un choix valid " << endl;
-            return choicePlayer(nameP);
+            cout << "SVP entrez un choix valid " << endl;
+            return choicePlayer();
         } else
             return choice;
     }
@@ -116,21 +120,6 @@ class Game {
             return choice;
     }
 
-    // pour pour accepter un trade
-    int getTradeAggreement() {
-        int choice;
-        cout << "Voulez-vous accepter le trade  ? : " << endl
-             << "1.oui" << endl
-             << "2.non" << endl
-             << "Entrez-votre choix ici : ";
-        cin >> choice;
-        if (choice != 1 && choice != 2) {
-            cout << "SVP entrez une reponse valide  " << endl;
-            return getTradeAggreement();
-        } else
-            return choice;
-    }
-
     // pour les cartes qu'on doit jouer
     int getPlacement() {
         int choice;
@@ -147,59 +136,12 @@ class Game {
             return choice;
     }
 
-    // pour une carte qu'on doit jouer
-    int getPlacementD() {
-        int choice;
-        cout << "Que voulez vous faire de la carte ? : " << endl
-             << "1.Ajouter la carte au chain " << endl
-             << "2.jette la carte " << endl
-             << "Entrez-votre choix ici : ";
-        cin >> choice;
-        if (choice != 1 && choice != 2) {
-            cout << "SVP entrez une reponse valide  " << endl;
-            return getPlacementD();
-        } else
-            return choice;
-    }
-
-    // pour lr pioche
-    int getPiocheChoice() {
-        int choice;
-        cout << "Que voulez vous faire ? : " << endl
-             << "1.Recuperer toute les cartes piocher" << endl
-             << "2.Supprimer toute les cartes piocher " << endl
-             << "3.Recuperer une carte d'un trade " << endl
-             << "4.Trade toutes les cartes du trade" << endl
-             << "Entrez-votre choix ici : ";
-        cin >> choice;
-        if (choice != 1 && choice != 2 & choice != 3) {
-            cout << "SVP entrez une reponse valide  " << endl;
-            return getPiocheChoice();
-        } else
-            return choice;
-    }
-
     // pour obtenir le nom des cartes qu'on veut tdu trade
     string getCardFromTrade() {
         string choice;
         cout << "Entrez le nom de la carte que vous vous voulez : ";
         cin >> choice;
         return choice;
-    }
-
-    // pour une carte restant du trade
-    int getPiocheR() {
-        int choice;
-        cout << "Que voulez vous faire de la carte ? : " << endl
-             << "1.Trade la carte qui reste  " << endl
-             << "2.jette la carte " << endl
-             << "Entrez-votre choix ici : ";
-        cin >> choice;
-        if (choice != 1 && choice != 2) {
-            cout << "SVP entrez une reponse valide  " << endl;
-            return getPlacementD();
-        } else
-            return choice;
     }
 
     // pour avoir le nom d'un joueur
@@ -213,4 +155,37 @@ class Game {
         } else
             return playerName;
     }
+
+    // Si on a deja un jeu en attente
+    bool shouldLoadGame() {
+        int choice;
+        cout << "[Sauvegarde] Un jeu est deja enregistrer. Voulez-vous : "
+             << endl
+             << "1. Continue le meme jeu " << endl
+             << "2. Commencez un nouveau jeu " << endl
+             << "Entrez votre choix : ";
+        cin >> choice;
+
+        return choice == 1;
+    }
+
+    Table *loadGame() {
+        ifstream file(Table::CHECKPOINTFILENAME);
+
+        if (file.is_open()) {       // si le fichier existe
+            if (shouldLoadGame()) { // on veut continue le jeu
+                file.seekg(0, ios::beg);
+                return new Table(file, new CardFactory());
+            }
+            file.close();
+        }
+
+        // Input player names or load game from file
+        string playerOneName, playerTwoName;
+        playerOneName = inputPlayerName();
+        playerTwoName = inputPlayerName();
+        return new Table(playerOneName, playerTwoName);
+    }
 };
+
+#endif

@@ -1,10 +1,14 @@
+#ifndef HAND_H
+#define HAND_H
+
+#include "Card.h"
+#include "CardFactory.h"
 #include <cassert>
 #include <iostream>
 #include <vector>
+
 using namespace std;
 
-class Card;
-class CardFactory;
 class Hand {
   private:
     vector<Card *> cards; // Conteneur pour stocker les cartes de la main
@@ -42,7 +46,7 @@ class Hand {
                  << " |" << endl;
             return cards[0];
         } else {
-            cout << "Votre main est vide " << endl;
+            cout << "[INFO] Votre main est vide " << endl;
             return nullptr;
         }
     }
@@ -61,7 +65,7 @@ class Hand {
             }
             os << endl;
         } else
-            os << "#Votre main est vide#" << endl;
+            os << "[INFO] Votre main est vide!" << endl;
         return os;
     }
 
@@ -80,3 +84,5 @@ class Hand {
                 cards.erase(cards.begin() + index);
     }
 };
+
+#endif

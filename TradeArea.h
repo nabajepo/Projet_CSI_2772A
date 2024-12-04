@@ -1,6 +1,11 @@
+#ifndef TRADE_AREA_H
+#define TRADE_AREA_H
+
 #include <algorithm>
 #include <iostream>
 #include <list> //liste doublement chainée
+
+string getSectionInfo(istream &file, int sectionID);
 
 using namespace std;
 
@@ -14,16 +19,17 @@ class TradeArea {
 
     // Constructeur qui initialise la TradeArea à partir d'un flux istream
     TradeArea(istream &file, const CardFactory *factory) {
-        vector<string> tr = split(getInfoTrade(file), '.');
+        vector<string> tr = split(getSectionInfo(file, 5), '.');
+        if (tr.empty())
+            return;
+
         vector<string> taille = split(tr[0], ':');
         int tailleT = stoi(taille[1]);
         if (tailleT != 0) {
-            vector<string> cards = split(split(tr[1], ':')[1], '|');
-            // @TODO: use factory
-            // for (string card : cards)
-            // cards.push_back(
-            //     createCard(card));
-            // on insere le card dans le trade
+            vector<string> cartes = split(split(tr[1], ':')[1], '|');
+            for (string card : cartes)
+                cards.push_back(
+                    createCard(card)); // on insere le card dans le trade
         }
     }
 
@@ -45,20 +51,6 @@ class TradeArea {
         return false; // cad ne se trouve pas dans le trade
     }
 
-    // // supprime une carte donnée et la retourne
-    // Card *trade(string nameCard) {
-    //     auto it = std::find_if(cards.begin(), cards.end(), [&](Card &card) {
-    //         return card.name() == nameCard;
-    //     });
-
-    //     if (it != cards.end()) {
-    //         Card *cardN = *it;
-    //         cards.erase(it); // Supprime la carte trouvée
-    //         return cardN;    // Retourne la carte trouvée
-    //     }
-    //     return nullptr; // Retourne nullptr si aucune carte ne correspond
-    // }
-
     // Retourne le nombre de cartes dans l'échange
     int numCards() const { return cards.size(); }
 
@@ -69,28 +61,8 @@ class TradeArea {
                 os << card->getName() << "|";
             os << endl;
         } else
-            os << "#Le trade est vide#" << endl;
+            os << "[INFO] Le trade est vide#" << endl;
         return os;
-    }
-
-    // retourner  une carte à une position donnée
-    Card *getElementAt(int index) {
-        if (numCards() > 0) {
-            auto it = cards.begin();
-            advance(it, index);
-            return *it;
-        } else {
-            cout << "#Le trade est vide# " << endl;
-            return nullptr;
-        }
-    }
-
-    // retourne une carte par le nom
-    Card *getCardByName(string nameCard) {
-        for (Card *card : cards)
-            if (nameCard == card->getName())
-                return card;
-        return nullptr; // si on ne trouve rien
     }
 
     // detruit toute les cartes du trade
@@ -104,25 +76,20 @@ class TradeArea {
             outFile << "Taille:" << cards.size() << endl;
             outFile << "Cartes:" << *this;
             outFile.close();
-            cout << "Le Trade a ete sauvegarde avec succes " << endl;
+            cout << "[Sauvegarde] Le Trade a ete sauvegarde avec succes "
+                 << endl;
         } else
-            cout << "Erreur de sauvegarde du Trade " << endl;
+            cout << "[ERROR] Erreur de sauvegarde du Trade " << endl;
     }
 
-    // pour stocker les informations du Trade dans un string
-    string getInfoTrade(istream &file) {
-        string info = "";
-        string line;
-        bool save = false;
-        while (getline(file, line)) {
-            if (line == "5")
-                save = true; // on commence à enregistrer si on arrive à l'index
-            else if (line == "6")
-                break; // on stop quand on arrive à l'index 5
-            else if (save)
-                info = info + line + ".";
-        }
-        return info;
+    // creer une classe à l'aide d'un nom
+    Card *createCard(string nameCard) {
+        Card *card[] = {new Blue(), new Chili(), new Stink(), new Green(),
+                        new Soy(),  new Black(), new Red(),   new Garden()};
+        for (int index = 0; index < 8; index++)
+            if (card[index]->getName() == nameCard)
+                return card[index];
+        return nullptr;
     }
 
     // pour split un string
@@ -135,14 +102,6 @@ class TradeArea {
         }
         return tokens;
     }
-
-    // creer une classe à l'aide d'un nom
-    Card *createCard(string nameCard) {
-        Card *card[] = {new Blue(), new Chili(), new Stink(), new Green(),
-                        new Soy(),  new Black(), new Red(),   new Garden()};
-        for (int index = 0; index < 8; index++)
-            if (card[index]->getName() == nameCard)
-                return card[index];
-        return nullptr;
-    }
 };
+
+#endif

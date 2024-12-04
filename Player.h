@@ -1,9 +1,17 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
+#include "Hand.h"
+
 using namespace std;
+
+string getSectionInfo(istream &file, int sectionID);
 
 // quand on veut acheter une chaine
 class NotEnoughCoins : public exception {
@@ -34,13 +42,14 @@ class Player {
         chains.push_back(chainTwo);
     } // Constructeur avec nom
 
-    // @TODO: use factory object to generate cards
-    Player(istream &file, const CardFactory *factory,
-           int pos) { // constructeur du flux
+    Player(istream &file, const CardFactory *factory, int pos) {
         position = pos;
-        vector<string> plt = split(getInfoPlayer(file), '.');
+        string playerInfo = getSectionInfo(file, pos);
+
+        vector<string> plt = split(playerInfo, '.');
         name = split(plt[0], ':')[1];
         coins = stoi(split(plt[1], ':')[1]);
+
         int lenCh = stoi(split(plt[2], ':')[1]);
         for (int index = 0; index < lenCh; index++) {
             if (index == 0)
@@ -68,7 +77,7 @@ class Player {
         }
     }
 
-    string getName() { return name; } // Obtenir le nom du joueur
+    string getName() const { return name; } // Obtenir le nom du joueur
 
     int getNumCoins() { return coins; }; // Obtenir le nombre de pièces
 
@@ -171,36 +180,24 @@ class Player {
             outFile << "SH:" << hand.getSizeHand() << endl;
             outFile << "Cartes:" << hand;
             outFile.close();
-            cout << "Les infos du joueur " << name
+
+            cout << "[Sauvegarde] Les infos du joueur " << name
                  << " a ete sauvegarde avec succes" << endl;
         } else
             cout << "Erreur de sauvegarde des infos du  joueur " << name
                  << endl;
     }
 
-    // pour stocker les informations du player dans un string
-    string getInfoPlayer(istream &file) {
-        string info = "";
-        string line;
-        bool save = false;
-        while (getline(file, line)) {
-            if (line == to_string(position))
-                save = true; // on commence à enregistrer si on arrive à l'index
-            else if (line == to_string(position + 1))
-                break; // on arrete à l'index suivant
-            else if (save)
-                info = info + line + ".";
-        }
-        return info;
-    }
     // pour split un string
-    vector<string> split(const string &str, char delimiter) {
-        vector<string> tokens;
-        istringstream stream(str);
-        string token;
-        while (getline(stream, token, delimiter)) {
+    vector<string> split(const string &input, char delimiter) {
+        std::vector<std::string> tokens;
+        std::stringstream ss(input);
+        std::string token;
+
+        while (std::getline(ss, token, delimiter)) {
             tokens.push_back(token);
         }
+
         return tokens;
     }
 
@@ -230,9 +227,11 @@ class Player {
     int getSizePlayer() { return hand.getSizeHand(); }
 
     Chain<Card *> &getChain(int index) {
-        if (index >= chains.size() || index <= 0)
+        if (index > chains.size() || index <= 0)
             throw out_of_range("Chain index out of range!");
 
         return chains[index - 1];
     }
 };
+
+#endif

@@ -1,28 +1,28 @@
-#include "Game.h"
+#ifndef TABLE_H
+#define TABLE_H
+
+#include "CardFactory.h"
+#include "DiscardPile.h"
 #include "TradeArea.h"
-#include <filesystem>
 #include <iostream>
 #include <vector>
-
-class DiscardPile;
 
 using namespace std;
 
 class Table {
-  public:
-    Player player1;  // joueur 1
-    Player player2;  // joueur 2
-    bool playerTurn; // FALSE: jouer 1, TRUE: joueur 2
-
+    Player player1;    // joueur 1
+    Player player2;    // joueur 2
+    bool playerTurn;   // FALSE: jouer 1, TRUE: joueur 2
     Deck deck;         // toutes les cartes melanagées
     DiscardPile trash; // contenant les cartes jéteé
     TradeArea trade;   // emplacement des cartes à echanger
 
     CardFactory factory; // pour factoty
-    string checkPointFilename =
-        "game.txt"; // pour l'emplacement du  fichier en question
 
-    Game game;
+  public:
+    // pour l'emplacement du  fichier en question
+    static const string CHECKPOINTFILENAME;
+
     Table(const string playerOneName, const string playerTwoName)
         : player1(playerOneName), player2(playerTwoName), trade(), factory() {
         // start with player one
@@ -53,9 +53,12 @@ class Table {
     // Toggle/change player turn
     void switchPlayer() { playerTurn = !playerTurn; }
 
-    // @TODO: use factory class
     Table(istream &file, const CardFactory *factory)
-        : player1(""), player2("") {}
+        : player1(file, factory, 2), player2(file, factory, 3),
+          trade(file, factory), trash(file, factory), deck(file, factory),
+          factory() {
+        playerTurn = getTurnPlayer(file);
+    }
 
     bool win(string &winnerName) {
         if (deck.empty()) { // Si le Deck est vide
@@ -79,24 +82,13 @@ class Table {
     // on affiche toute les mains des joue  true toute les mains et false
     // une carte
     void printHand(bool choice) {
-        cout << "Main du joueur 1:" << endl;
+        cout << "Main de " << player1.getName() << endl;
         player1.printHand(cout, choice);
         cout << "\n\n";
 
-        cout << "Main du joueur 2:" << endl;
+        cout << "Main de " << player2.getName() << endl;
         player2.printHand(cout, choice);
         cout << "\n\n";
-    }
-
-    // pour mettre à jour la table
-    void updateTable(Player &playe, Player &playe1, Player &playe2,
-                     DiscardPile &dr, TradeArea &tr, Deck &decOfC) {
-        player1 = playe1;
-        player2 = playe2;
-        trash = dr;
-        trade = tr;
-        deck = decOfC;
-        cout << "La table a ete mise a jour " << endl;
     }
 
     // Afficher la table
@@ -115,65 +107,44 @@ class Table {
     void showPlayers() const {
         cout << "------------INFO-PLAYERS---------------" << endl;
         cout << "Pour joueur 1 : " << endl;
-        cout << player1;
+        cout << player1.getName();
         cout << "Pour joueur 2 : " << endl;
-        cout << player2;
+        cout << player2.getName();
         cout << "---------------------------------------" << endl;
     }
 
     // pour enregistrer le jeu
     void saveTable() {
-        ofstream outFile(checkPointFilename);
+        ofstream outFile(CHECKPOINTFILENAME);
         if (outFile.is_open()) {
             outFile << 1 << endl;
-            // outFile << "Tour:" << player.getName() << endl;
-            player1.savePlayer(checkPointFilename, 2);
-            player2.savePlayer(checkPointFilename, 3);
-            trash.saveDiscard(checkPointFilename, 4);
-            trade.saveTrade(checkPointFilename, 5);
-            deck.saveDeck(checkPointFilename, 6);
+            outFile << "Tour:" << playerTurn << endl;
             outFile.close();
-            cout << "Le jeu a ete enregistre avec succes " << endl;
+
+            player1.savePlayer(CHECKPOINTFILENAME, 2);
+            player2.savePlayer(CHECKPOINTFILENAME, 3);
+            trash.saveDiscard(CHECKPOINTFILENAME, 4);
+            trade.saveTrade(CHECKPOINTFILENAME, 5);
+            deck.saveDeck(CHECKPOINTFILENAME, 6);
+
+            cout << "[Sauvegarde] Le jeu a ete enregistre avec succes " << endl;
         } else {
-            cout << "Erreur dans la sauvergarde du jeu " << endl;
+            cout << "[ERROR] Erreur dans la sauvergarde du jeu " << endl;
         }
     }
 
-    // Si on a deja un jeu en attente
-    int continueGame() {
-        int choice;
-        cout << "Un jeu est deja enregistrer : " << endl
-             << "1.Voulez-vous continue le meme jeu " << endl
-             << "2.Voulez-vous commencez un nouveau jeu " << endl
-             << "Entrez votre choix : ";
-        cin >> choice;
-        if (choice != 1 && choice != 2) {
-            cout << "SVP entrez un nombre valide " << endl;
-            return continueGame();
-        } else
-            return choice;
-    }
-
-    // pour supprimer le jeu qui etait enregistrer
-    void deleteGame() {
-        // filesystem::remove(checkPointFilename);
-    }
+    void deleteGame() { remove(CHECKPOINTFILENAME.c_str()); }
 
     // pour stocker les informations du jouer qui jouer
-    string getTurnPlayer(istream &file) {
-        string info = "";
+    bool getTurnPlayer(istream &file) {
+        file.clear();
+        file.seekg(0, ios::beg);
         string line;
-        bool save = false;
         while (getline(file, line)) {
-            if (line == "1")
-                save = true; // on commence à enregistrer si on arrive à
-                             // l'index
-            else if (line == "2")
-                break; // on stop quand on arrive à l'index 5
-            else if (save)
-                info = info + line + ".";
+            if (line.find("Tour:") != string::npos)
+                return line.find("1") != string::npos;
         }
-        return info;
+        return false;
     }
 
     // pour split un string
@@ -195,3 +166,7 @@ class Table {
 
     DiscardPile &getDiscardPile() { return trash; }
 };
+
+const string Table::CHECKPOINTFILENAME = "game.txt";
+
+#endif

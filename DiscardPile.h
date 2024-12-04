@@ -1,7 +1,13 @@
+#ifndef DISCARD_PILe_H
+#define DISCARD_PILe_H
+
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
+
+string getSectionInfo(istream &file, int sectionID);
+
 using namespace std;
 class Card;
 class DiscardPile {
@@ -14,15 +20,18 @@ class DiscardPile {
     // Constructeur qui accepte un istream et un CardFactory pour construire une
     // pile de cartes à partir d'un fichier
     DiscardPile(istream &file, const CardFactory *factory) {
-        vector<string> ds = split(getInfoDiscard(file), '.');
+        string discardInfo = getSectionInfo(file, 4);
+
+        vector<string> ds = split(discardInfo, '.');
+        if (ds.empty())
+            return;
+
         vector<string> taille = split(ds[0], ':');
         int tailleD = stoi(taille[1]);
         if (tailleD != 0) {
             vector<string> cartes = split(split(ds[1], ':')[1], '|');
-            // for (string card : cards)
-            // cards.push_back(
-            //     createCard(card)); // utiliser factory Object
-            // on insere les cards dans le discard
+            for (string card : cartes)
+                cards.push_back(createCard(card)); // utiliser factory Object
         }
     }
 
@@ -39,7 +48,7 @@ class DiscardPile {
             cards.pop_back();
             return topC;
         } else {
-            cout << "Le  discardPile est vide " << endl;
+            cout << "[ERROR] Le  discardPile est vide " << endl;
             return nullptr;
         }
     }
@@ -49,7 +58,7 @@ class DiscardPile {
         if (cards.size() > 0)
             return cards.back();
         else {
-            cout << "Le  discardPile est vide " << endl;
+            cout << "[INFO] Le  discardPile est vide " << endl;
             return nullptr;
         }
     }
@@ -61,7 +70,7 @@ class DiscardPile {
                 os << card->getName() << "|";
             os << endl;
         } else
-            os << "#Le discardPile est vide#" << endl;
+            os << "[INFO] Le discardPile est vide!" << endl;
     }
 
     int size() const { return cards.size(); }
@@ -71,7 +80,7 @@ class DiscardPile {
         if (dsc.size() > 0)
             os << "|" << dsc.top()->getName() << "|" << endl;
         else
-            os << "La pile est vide " << endl;
+            os << "[INFO] La pile est vide " << endl;
         return os;
     }
 
@@ -84,25 +93,10 @@ class DiscardPile {
             outFile << "Cartes:";
             print(outFile);
             outFile.close();
-            cout << "Le discard a ete sauvegarde avec succes " << endl;
+            cout << "[Sauvegarde] Le discard a ete sauvegarde avec succes "
+                 << endl;
         } else
-            cout << "Erreur de sauvegarde du discard " << endl;
-    }
-
-    // pour stocker les informations du discard dans un string
-    string getInfoDiscard(istream &file) {
-        string info = "";
-        string line;
-        bool save = false;
-        while (getline(file, line)) {
-            if (line == "4")
-                save = true; // on commence à enregistrer si on arrive à l'index
-            else if (line == "5")
-                break; // on stop quand on arrive à l'index 5
-            else if (save)
-                info = info + line + ".";
-        }
-        return info;
+            cout << "[ERROR] Erreur de sauvegarde du discard " << endl;
     }
 
     // pour split un string
@@ -126,3 +120,5 @@ class DiscardPile {
         return nullptr;
     }
 };
+
+#endif
