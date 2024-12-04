@@ -1,7 +1,10 @@
+#ifndef DECK_H
+#define DECK_H
+
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <fstream>
 #include <vector>
 using namespace std;
 
@@ -14,7 +17,7 @@ class Deck : public vector<Card *> {
     Deck() {}
 
     // Constructeur qui accepte un istream et un CardFactory pour construire un
-    // deck à partir d'un fichier. TODO: use factory to create cards instead
+    // deck à partir d'un fichier.
     Deck(istream &file, const CardFactory *factory) {
         vector<string> cards =
             split(split(split(getInfoDeck(file), '.')[1], ':')[1], '|');
@@ -25,8 +28,9 @@ class Deck : public vector<Card *> {
 
     // Méthode pour tirer et supprimer la carte supérieure du deck
     Card *draw() {
-        if (this->empty()) return nullptr;
-        
+        if (this->empty())
+            return nullptr;
+
         Card *topCard = this->back();
         this->pop_back();
         return topCard;
@@ -48,9 +52,10 @@ class Deck : public vector<Card *> {
             outFile << "Taille:" << this->size() << endl;
             outFile << "Cartes:" << *this;
             outFile.close();
-            cout << "Le deck a ete sauvegarde avec succes " << endl;
+            cout << "[Sauvegarde] Le deck a ete sauvegarde avec succes "
+                 << endl;
         } else
-            cout << "Erreur de sauvegarde du deck " << index << endl;
+            cout << "[ERROR] Erreur de sauvegarde du deck " << index << endl;
     }
 
     // pour stocker les informations du deck dans un string
@@ -88,3 +93,5 @@ class Deck : public vector<Card *> {
         return nullptr;
     }
 };
+
+#endif

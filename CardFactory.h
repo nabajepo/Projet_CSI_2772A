@@ -1,3 +1,7 @@
+#ifndef CARDFACTORY_H
+
+#define CARDFACTORY_H
+
 #include "Deck.h"
 #include <algorithm>
 #include <iostream>
@@ -54,7 +58,6 @@ class CardFactory {
         for (int i = 0; i < 8; i++) {
             cards.push_back(new Garden());
         }
-        cout << "[INFO] # Cards in deck: " << cards.size() << endl;
     }
 
     static CardFactory *getFactory() {
@@ -83,3 +86,5 @@ class CardFactory {
 };
 
 CardFactory *CardFactory::instance = nullptr;
+
+#endif

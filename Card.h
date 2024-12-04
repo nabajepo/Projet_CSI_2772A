@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CARD_H
+#define CARD_H
+
 #include <iostream>
 using namespace std;
 class Card {
@@ -221,3 +223,5 @@ class Garden : public Card {
 
     void print(ostream &os) override { os << getName().at(0) << " "; }
 };
+
+#endif
