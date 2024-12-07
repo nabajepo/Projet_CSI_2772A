@@ -55,7 +55,7 @@ class Deck : public vector<Card *> {
             cout << "[Sauvegarde] Le deck a ete sauvegarde avec succes "
                  << endl;
         } else
-            cout << "[ERROR] Erreur de sauvegarde du deck " << index << endl;
+            cout << "[ERREUR] Erreur de sauvegarde du deck" << index << endl;
     }
 
     // pour stocker les informations du deck dans un string

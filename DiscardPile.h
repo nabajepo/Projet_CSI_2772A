@@ -48,7 +48,7 @@ class DiscardPile {
             cards.pop_back();
             return topC;
         } else {
-            cout << "[ERROR] Le  discardPile est vide " << endl;
+            cout << "[ERREUR] Le  discardPile est vide" << endl;
             return nullptr;
         }
     }
@@ -96,7 +96,7 @@ class DiscardPile {
             cout << "[Sauvegarde] Le discard a ete sauvegarde avec succes "
                  << endl;
         } else
-            cout << "[ERROR] Erreur de sauvegarde du discard " << endl;
+            cout << "[ERREUR] Erreur de sauvegarde du discard " << endl;
     }
 
     // pour split un string

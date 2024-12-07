@@ -82,6 +82,7 @@ class Table {
     // on affiche toute les mains des joue  true toute les mains et false
     // une carte
     void printHand(bool choice) {
+        cout << "------ Table ------" << endl;
         cout << "Main de " << player1.getName() << endl;
         player1.printHand(cout, choice);
         cout << "\n\n";
@@ -129,7 +130,7 @@ class Table {
 
             cout << "[Sauvegarde] Le jeu a ete enregistre avec succes " << endl;
         } else {
-            cout << "[ERROR] Erreur dans la sauvergarde du jeu " << endl;
+            cout << "[ERREUR] Erreur dans la sauvergarde du jeu " << endl;
         }
     }
 

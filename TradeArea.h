@@ -79,7 +79,7 @@ class TradeArea {
             cout << "[Sauvegarde] Le Trade a ete sauvegarde avec succes "
                  << endl;
         } else
-            cout << "[ERROR] Erreur de sauvegarde du Trade " << endl;
+            cout << "[ERREUR] Erreur de sauvegarde du Trade" << endl;
     }
 
     // creer une classe à l'aide d'un nom

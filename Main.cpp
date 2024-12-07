@@ -24,7 +24,7 @@ int main() {
     /// Pour jouer
     while (!table->win(winner)) {
         Player &currentPlayer = table->getCurrentPlayer();
-        cout << "[INFO] " << currentPlayer.getName() << " is playing!" << endl;
+        cout << "[INFO] C'est le tour de " << currentPlayer.getName() << endl;
 
         if (game.shouldPause()) {
             table->saveTable();
@@ -40,11 +40,11 @@ int main() {
         // If TradeArea is not empty
         //      Add bean cards from the TradeArea to chains or discard them.
         if (table->getTradeArea().cards.size()) {
-            cout << "there are " << table->getTradeArea().cards.size()
-                 << " cards in trade area!" << endl;
+            cout << "Il y a " << table->getTradeArea().cards.size()
+                 << " cartes dans trade area!" << endl;
             for (Card *card : table->getTradeArea().cards) {
-                cout << "[TradeArea] Do you want to add " << card->getName()
-                     << " to your chains? (y/n): ";
+                cout << "[TradeArea] Voulez-vous rajoute " << card->getName()
+                     << " a vos chaines? (y/n): ";
                 char choice;
                 cin >> choice;
                 if (choice == 'y' || choice == 'Y') {
@@ -55,7 +55,8 @@ int main() {
                             currentPlayer.addCardToChain(2, card);
                         } catch (const IllegalType &e) {
                             cout << e.what()
-                                 << "Card cannot be added to either chain."
+                                 << "La carte ne peut pas etre rajouter a "
+                                    "aucune chaine!"
                                  << endl;
                             table->getDiscardPile().operator+=(card);
                         }
@@ -70,7 +71,7 @@ int main() {
         }
 
         // Play topmost card from Hand.
-        cout << "Playing top card and adding it to chain ..." << endl;
+        cout << "On joue la carte au dessus de la main du joeur ..." << endl;
         Card *card = currentPlayer.playFirstCard();
 
         try {
@@ -79,7 +80,8 @@ int main() {
             try {
                 currentPlayer.addCardToChain(2, card);
             } catch (const IllegalType &e) {
-                cout << e.what() << "Card cannot be added to either chain."
+                cout << e.what()
+                     << "La carte ne peut pas etre rajouter a aucune chaine!"
                      << endl;
                 table->getDiscardPile().operator+=(card);
             }
@@ -102,7 +104,7 @@ int main() {
                 currentPlayer.getChain(2).destroyChain();
             }
         } catch (const out_of_range &) {
-            cout << "[ERROR] Chain index out of range!" << endl;
+            cout << "[ERREUR] Chain index out of range!" << endl;
         }
 
         // If player decides to Show the player's full hand and player
@@ -143,8 +145,8 @@ int main() {
         // copy cards to prevent removing elements while removing them
         auto tradeAreaCards = table->getTradeArea().cards;
         for (Card *card : tradeAreaCards) {
-            cout << "[TradeArea] Do you want to add " << card->getName()
-                 << " to your chains? (y/n): ";
+            cout << "[TradeArea] Voulez-vous rajoute " << card->getName()
+                 << " a vos chaines? (y/n): ";
             char choice;
             cin >> choice;
             if (choice == 'y' || choice == 'Y') {
@@ -155,7 +157,9 @@ int main() {
                         currentPlayer.addCardToChain(2, card);
                     } catch (const IllegalType &e) {
                         cout << e.what()
-                             << "Card cannot be added to either chain." << endl;
+                             << "La carte ne peut pas etre rajouter a aucune "
+                                "chaine!"
+                             << endl;
                         // Leave card in trade area
                         continue;
                     }
@@ -183,8 +187,8 @@ int main() {
         table->switchPlayer();
     }
 
-    cout << "Winner is: " << winner << endl;
-    cout << "END" << endl;
+    cout << "Le gagnant est: " << winner << endl;
+    cout << "FIN" << endl;
 
     return 0;
 }
