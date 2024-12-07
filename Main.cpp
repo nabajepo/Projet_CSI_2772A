@@ -59,8 +59,11 @@ int main() {
                         } catch (const IllegalType &e) {
                             cout << e.what()
                                  << "La carte ne peut pas etre rajouter a "
-                                    "aucune chaine!"
-                                 << endl;
+                                    "aucune chaine! ["
+                                 << currentPlayer.getChain(1).getNameChain()
+                                 << " | "
+                                 << currentPlayer.getChain(2).getNameChain()
+                                 << "]\n\n";
                             table->getDiscardPile().operator+=(card);
                         }
                     }
@@ -86,8 +89,10 @@ int main() {
                 cout << "[INFO] Carte rajoute a la deuxieme chaine!" << endl;
             } catch (const IllegalType &e) {
                 cout << e.what()
-                     << "La carte ne peut pas etre rajouter a aucune chaine!"
-                     << endl;
+                     << "La carte ne peut pas etre rajouter a "
+                        "aucune chaine! ["
+                     << currentPlayer.getChain(1).getNameChain() << " | "
+                     << currentPlayer.getChain(2).getNameChain() << "]\n\n";
                 table->getDiscardPile().operator+=(card);
             }
         }
@@ -164,9 +169,12 @@ int main() {
                         currentPlayer.addCardToChain(2, card);
                     } catch (const IllegalType &e) {
                         cout << e.what()
-                             << "La carte ne peut pas etre rajouter a aucune "
-                                "chaine!"
-                             << endl;
+                             << "La carte ne peut pas etre rajouter a "
+                                "aucune chaine! ["
+                             << currentPlayer.getChain(1).getNameChain()
+                             << " | "
+                             << currentPlayer.getChain(2).getNameChain()
+                             << "]\n\n";
                         // Leave card in trade area
                         continue;
                     }

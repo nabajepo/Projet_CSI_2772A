@@ -42,8 +42,10 @@ class Chain : public Chain_Base {
 
     // Opérateur += pour ajouter une carte à la chaîne
     Chain<T> &operator+=(Card *newCard) {
-        if (typeid(T) != typeid(newCard))
-            throw IllegalType();
+        if (cards.size() != 0) {
+            if (cards.front()->getName() != newCard->getName())
+                throw IllegalType();
+        }
 
         cards.push_back(newCard);
         return *this;
