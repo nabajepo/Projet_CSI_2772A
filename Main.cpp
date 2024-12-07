@@ -111,7 +111,7 @@ int main() {
                 currentPlayer.operator+=(coins);
                 cout << "[INFO] Vous avez recu " << coins
                      << " piece(s) de votre deuxieme chaine: "
-                     << currentPlayer.getChain(1).getNameChain() << endl;
+                     << currentPlayer.getChain(2).getNameChain() << endl;
                 currentPlayer.getChain(2).destroyChain();
             }
         } catch (const out_of_range &) {
