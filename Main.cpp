@@ -25,6 +25,7 @@ int main() {
     while (!table->win(winner)) {
         Player &currentPlayer = table->getCurrentPlayer();
         cout << "[INFO] C'est le tour de " << currentPlayer.getName() << endl;
+        cout << "Coins: " << currentPlayer.getNumCoins() << "\n\n";
 
         if (game.shouldPause()) {
             table->saveTable();
@@ -49,9 +50,11 @@ int main() {
                 cin >> choice;
                 if (choice == 'y' || choice == 'Y') {
                     try {
+                        // essayer la premier chaine
                         currentPlayer.addCardToChain(1, card);
                     } catch (const IllegalType &) {
                         try {
+                            // essayer la deuxieme chaine
                             currentPlayer.addCardToChain(2, card);
                         } catch (const IllegalType &e) {
                             cout << e.what()
@@ -76,9 +79,11 @@ int main() {
 
         try {
             currentPlayer.addCardToChain(1, card);
+            cout << "[INFO] Carte rajoute a la premiere chaine!" << endl;
         } catch (const IllegalType &) {
             try {
                 currentPlayer.addCardToChain(2, card);
+                cout << "[INFO] Carte rajoute a la deuxieme chaine!" << endl;
             } catch (const IllegalType &e) {
                 cout << e.what()
                      << "La carte ne peut pas etre rajouter a aucune chaine!"
@@ -94,6 +99,9 @@ int main() {
             int coins = currentPlayer.getChain(1).sell();
             if (coins) {
                 currentPlayer.operator+=(coins);
+                cout << "[INFO] Vous avez recu " << coins
+                     << " piece(s) de votre premiere chaine: "
+                     << currentPlayer.getChain(1).getNameChain() << endl;
                 currentPlayer.getChain(1).destroyChain();
             }
 
@@ -101,15 +109,14 @@ int main() {
             coins = currentPlayer.getChain(2).sell();
             if (coins) {
                 currentPlayer.operator+=(coins);
+                cout << "[INFO] Vous avez recu " << coins
+                     << " piece(s) de votre deuxieme chaine: "
+                     << currentPlayer.getChain(1).getNameChain() << endl;
                 currentPlayer.getChain(2).destroyChain();
             }
         } catch (const out_of_range &) {
             cout << "[ERREUR] Chain index out of range!" << endl;
         }
-
-        // If player decides to Show the player's full hand and player
-        // selects an arbitrary card Discard the arbitrary card from the
-        // player's hand and place it on the discard pile.
 
         // Draw three cards from the deck and place cards in the trade area
         for (int i = 0; i < 3; i++) {
@@ -142,7 +149,7 @@ int main() {
         //      else card remains in trade area for the next player.
         // end
 
-        // copy cards to prevent removing elements while removing them
+        // copy cards to prevent removing elements while iterating through them
         auto tradeAreaCards = table->getTradeArea().cards;
         for (Card *card : tradeAreaCards) {
             cout << "[TradeArea] Voulez-vous rajoute " << card->getName()
