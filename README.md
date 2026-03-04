@@ -1,13 +1,32 @@
-# Projet_CSI_2772A
-Bohnanza game
+# Projet_CSI_2772A – Bojnanza Card Game (C++)
 
-Nom étudiant : Patrick Igiraneza
-Numéro d’étudiant : 300287996
+## Overview
+This repository contains a C++ implementation of the **Bohnanza** card game created as part of the course **CSI2772A**.
 
-Nom étudiant : NAHIMANA BAHENDA Jean Philippe
-Numéro d’étudiant : 300324295
+The project focuses on **object-oriented programming**, clean abstraction, and reusable components (cards, deck, players, trading, etc.).
 
-Nom étudiant : Kamga Yvan
-Numéro d’étudiant : 300291315
+---
 
-Code du cours : CSI2772A
+## Key Concepts
+- C++ OOP (classes, encapsulation, composition)
+- Game logic implementation
+- Modular design (Card, Deck, Player, TradeArea, etc.)
+
+---
+
+
+---
+
+## How to Run
+
+### 1) Compile
+From the project root:
+
+```bash
+g++ -std=c++17 Main.cpp -o game
+```
+### 2) Execute
+
+```bash
+./game
+```
