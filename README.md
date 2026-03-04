@@ -15,8 +15,6 @@ The project focuses on **object-oriented programming**, clean abstraction, and r
 ---
 
 
----
-
 ## How to Run
 
 ### 1) Compile
